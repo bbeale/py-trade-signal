@@ -35,13 +35,16 @@ setup(name="py-trade-signal",
       description="A collection of trade signals calculated via traditional technical and fundamental analysis, with the inclusion of sentiment based indicators.",
       long_description=dedent("""\
       Getting Started:
-            $ python setup.py install
+      
+            python setup.py install
+      
       With pip:
-            $ pip install py-trade-signal
+      
+            pip install py-trade-signal
       """),
       long_description_content_type="text/markdown",
       author="bbeale",
       url="https://github.com/bbeale/py-trade-signal",
-      setup_requires=['wheel'],
+      setup_requires=["wheel", "finta"],
       requires=["finta", "pandas"]
       )
