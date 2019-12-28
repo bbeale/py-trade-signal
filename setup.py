@@ -45,6 +45,6 @@ setup(name="py_trade_signal",
       long_description_content_type="text/markdown",
       author="bbeale",
       url="https://github.com/bbeale/py-trade-signal",
-      setup_requires=["wheel", "finta", "numpy", "pandas", "python-dateutil", "pytz", "six"],
-      requires=["finta", "numpy", "pandas", "python-dateutil", "pytz", "six"]
+      setup_requires=["wheel", "finta", "numpy", "pandas", "python_dateutil", "pytz", "six"],
+      requires=["finta", "numpy", "pandas", "python_dateutil", "pytz", "six"]
       )
