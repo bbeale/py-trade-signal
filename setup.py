@@ -4,9 +4,9 @@ import setuptools
 from distutils.core import setup
 from textwrap import dedent
 
-setup(name="py-trade-signal",
-      version="0.0.1",
-      packages=["py-trade-signal"],
+setup(name="py_trade_signal",
+      version="0.0.2",
+      packages=["py_trade_signal"],
       classifiers=[
           "Programming Language :: Python :: 3",
           "License :: OSI Approved :: MIT License",
@@ -40,11 +40,11 @@ setup(name="py-trade-signal",
       
       With pip:
       
-            pip install py-trade-signal
+            pip install py_trade_signal
       """),
       long_description_content_type="text/markdown",
       author="bbeale",
       url="https://github.com/bbeale/py-trade-signal",
-      setup_requires=["wheel", "finta"],
-      requires=["finta", "pandas"]
+      setup_requires=["wheel", "finta", "numpy", "pandas", "python-dateutil", "pytz", "six"],
+      requires=["finta", "numpy", "pandas", "python-dateutil", "pytz", "six"]
       )
