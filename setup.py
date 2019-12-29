@@ -5,7 +5,7 @@ from distutils.core import setup
 from textwrap import dedent
 
 setup(name="py_trade_signal",
-      version="0.0.2",
+      version="1.0.0",
       packages=["py_trade_signal"],
       classifiers=[
           "Programming Language :: Python :: 3",
