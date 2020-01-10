@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import setuptools
-from distutils.core import setup
 from textwrap import dedent
+import setuptools
 
-setup(name="py_trade_signal",
-      version="1.0.0",
+
+setuptools.setup(
+      name="py_trade_signal",
+      version="1.0.1",
       packages=["py_trade_signal"],
       classifiers=[
           "Programming Language :: Python :: 3",
