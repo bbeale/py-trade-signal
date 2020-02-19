@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from py_trade_signal import SignalException
+from py_trade_signal.exception import TradeSignalException
 from pandas.errors import EmptyDataError
 from finta import TA
 
@@ -39,8 +39,8 @@ class VzoSignal:
             adx = TA.ADX(dataframe)
             dmi = TA.DMI(dataframe)
             ema = TA.EMA(dataframe, period=60)
-        except SignalException:
-            raise SignalException("[!] Failed to retrieve one or more indicator values.")
+        except TradeSignalException as error:
+            raise error
         else:
             _vzo_bullish_cross = vzo.iloc[-1] > -40 and vzo.iloc[-4:-2].mean() <= -40
             _adx_trending = adx.iloc[-1] > 20
@@ -75,8 +75,8 @@ class VzoSignal:
             adx = TA.ADX(dataframe)
             dmi = TA.DMI(dataframe)
             ema = TA.EMA(dataframe, period=60)
-        except SignalException:
-            raise SignalException("[!] Failed to retrieve one or more indicator values.")
+        except TradeSignalException as error:
+            raise error
         else:
             _vzo_bearish_cross = vzo.iloc[-1] < 40 and vzo.iloc[-4:-2].mean() >= 40
             _adx_trending = adx.iloc[-1] < 20

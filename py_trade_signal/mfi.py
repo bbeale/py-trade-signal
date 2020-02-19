@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from py_trade_signal import SignalException
+from py_trade_signal.exception import TradeSignalException
 from pandas.errors import EmptyDataError
 from finta import TA
 
@@ -24,8 +24,8 @@ class MfiSignal:
             raise EmptyDataError("[!] Dataframe is empty or not valid.")
         try:
             raw_mfi = TA.MFI(dataframe)
-        except SignalException:
-            raise SignalException("[!] Failed to retrieve raw MFI values.")
+        except TradeSignalException as error:
+            raise error
         else:
             return raw_mfi.iloc[-1] > 10 and min(raw_mfi.iloc[-4:-2]) <= 10
 
@@ -41,7 +41,7 @@ class MfiSignal:
             raise EmptyDataError("[!] Dataframe is empty or not valid.")
         try:
             raw_mfi = TA.MFI(dataframe)
-        except SignalException:
-            raise SignalException("[!] Failed to retrieve raw MFI values.")
+        except TradeSignalException as error:
+            raise error
         else:
             return raw_mfi.iloc[-1] > 90 and min(raw_mfi.iloc[-4:-2]) <= 90

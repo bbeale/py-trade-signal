@@ -5,10 +5,6 @@ from .mfi import MfiSignal
 from .vzo import VzoSignal
 
 
-class SignalException(Exception):
-    pass
-
-
 class TradeSignal:
 
     def __init__(self):
