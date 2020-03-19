@@ -32,11 +32,8 @@ class MacdSignal:
         else:
 
             _is_negative = raw_macd["MACD"].iloc[-1] < 0
-            _previous_below_signal = min(raw_macd["MACD"].iloc[-4:-2]) < raw_macd["SIGNAL"].iloc[-1]
-            _current_above_signal = raw_macd["MACD"].iloc[-1] > raw_macd["SIGNAL"].iloc[-1]
-            _bullish_cross = _previous_below_signal and _current_above_signal
-
-            signal = _is_negative and _bullish_cross
+            _below_signal = raw_macd["MACD"].iloc[-1] < raw_macd["SIGNAL"].iloc[-1]
+            signal = _is_negative and _below_signal
 
             if dataframe2 is not None:
                 try:
@@ -46,11 +43,8 @@ class MacdSignal:
 
                 else:
                     _is_negative = raw_macd2["MACD"].iloc[-1] < 0
-                    _previous_below_signal = min(raw_macd2["MACD"].iloc[-4:-2]) < raw_macd2["SIGNAL"].iloc[-1]
-                    _current_above_signal = raw_macd2["MACD"].iloc[-1] > raw_macd2["SIGNAL"].iloc[-1]
-                    _bullish_cross = _previous_below_signal and _current_above_signal
-
-                    signal = signal and _is_negative and _bullish_cross
+                    _below_signal = raw_macd2["MACD"].iloc[-1] < raw_macd2["SIGNAL"].iloc[-1]
+                    signal = signal and _is_negative and _below_signal
 
             return signal
 
@@ -74,10 +68,8 @@ class MacdSignal:
         else:
 
             _is_positive = raw_macd["MACD"].iloc[-1] > 0
-            _previous_above_signal = min(raw_macd["MACD"].iloc[-4:-2]) > raw_macd["SIGNAL"].iloc[-1]
-            _current_below_signal = raw_macd["MACD"].iloc[-1] < raw_macd["SIGNAL"].iloc[-1]
-            _bearish_cross = _previous_above_signal and _current_below_signal
-            signal = _is_positive and _bearish_cross
+            _above_signal = raw_macd["MACD"].iloc[-1] > raw_macd["SIGNAL"].iloc[-1]
+            signal = _is_positive and _above_signal
 
             if dataframe2 is not None:
                 try:
@@ -87,10 +79,7 @@ class MacdSignal:
 
                 else:
                     _is_positive = raw_macd2["MACD"].iloc[-1] > 0
-                    _previous_above_signal = min(raw_macd2["MACD"].iloc[-4:-2]) > raw_macd2["SIGNAL"].iloc[-1]
-                    _current_below_signal = raw_macd2["MACD"].iloc[-1] < raw_macd2["SIGNAL"].iloc[-1]
-                    _bearish_cross = _previous_above_signal and _current_below_signal
-
-                    signal = signal and _is_positive and _bearish_cross
+                    _above_signal = raw_macd2["MACD"].iloc[-1] < raw_macd2["SIGNAL"].iloc[-1]
+                    signal = signal and _is_positive and _above_signal
 
             return signal

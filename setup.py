@@ -6,7 +6,7 @@ import setuptools
 
 setuptools.setup(
       name="py_trade_signal",
-      version="1.0.3",
+      version="1.0.4",
       packages=["py_trade_signal"],
       classifiers=[
           "Programming Language :: Python :: 3",
