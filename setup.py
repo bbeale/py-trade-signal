@@ -6,7 +6,7 @@ import setuptools
 
 setuptools.setup(
       name="py_trade_signal",
-      version="1.0.4",
+      version="1.0.5",
       packages=["py_trade_signal"],
       classifiers=[
           "Programming Language :: Python :: 3",
@@ -48,5 +48,5 @@ setuptools.setup(
       author_email="beale.ben@gmail.com",
       url="https://github.com/bbeale/py-trade-signal",
       setup_requires=["wheel", "setuptools"],
-      requires=["finta", "numpy", "pandas", "python_dateutil", "pytz", "six"]
+      install_requires=["finta", "numpy", "pandas", "python_dateutil", "pytz", "six"]
       )
