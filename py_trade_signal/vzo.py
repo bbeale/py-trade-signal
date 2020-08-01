@@ -1,19 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from py_trade_signal.exception import TradeSignalException
-from pandas.errors import EmptyDataError
+from py_trade_signal import TradeSignalException, is_valid_dataframe
 from finta import TA
+from finta.utils import trending_up, trending_down
+import pandas as pd
 
 
-class VzoSignal:
+class VzoSignal(object):
 
     __module__ = "py_trade_signal"
 
-    def __init__(self):
-        pass
+    def __init__(self,
+                 df: pd.DataFrame,
+                 df2: pd.DataFrame = None):
+        self.df = df
+        self.df2 = df2
 
-    @staticmethod
-    def buy(dataframe):
+    def buy(self,
+            period: int = 14,
+            ema_period: int = 60,
+            column: str = "close",
+            adjust: bool = True,
+            period2: int = 14,
+            ema_period2: int = 60,
+            column2: str = "close",
+            adjust2: bool = True) -> bool:
         """Bullish buy signal calculation based on volume zone oscillator (VZO).
 
         The flag is generated based on a number of conditional statements generated from technical indicators.
@@ -28,28 +39,62 @@ class VzoSignal:
         if vzo.buy() and some_other_indicator():
             execute_buy_order()
 
-        :param dataframe:
-        :return:
+        :param period:
+        :param ema_period:
+        :param column:
+        :param adjust:
+        :param period2:
+        :param ema_period2:
+        :param column2:
+        :param adjust2:
+        :return bool:
         """
-        if dataframe is None or len(list(dataframe.keys())) < 1:
-            raise EmptyDataError("[!] Dataframe is empty or not valid.")
         try:
             # grab the indicators we need (VZO, ADX, DMI, EMA) for this signal
-            vzo = TA.VZO(dataframe)
-            adx = TA.ADX(dataframe)
-            dmi = TA.DMI(dataframe)
-            ema = TA.EMA(dataframe, period=60)
+            vzo = TA.VZO(self.df, period, column, adjust)
+            adx = TA.ADX(self.df, period, adjust)
+            dmi = TA.DMI(self.df, period, adjust)
+            ema = TA.EMA(self.df, ema_period, column, adjust)
         except TradeSignalException as error:
             raise error
         else:
-            _vzo_bullish_cross = vzo.iloc[-1] > -40 and vzo.iloc[-4:-2].mean() <= -40
+            _vzo_bullish_cross = vzo.iloc[-1] > -40 and trending_up(vzo.iloc[:-2], period=int(period/2))
             _adx_trending = adx.iloc[-1] > 20
             _dmi_positive = dmi["DI+"] > dmi["DI-"]
-            _ema_bullish_cross = dataframe["close"].iloc[-1] > ema.iloc[-1] and dataframe["close"].iloc[-4:-2].mean() < ema.iloc[-4:-2].mean()
-            return _vzo_bullish_cross and (_adx_trending or _dmi_positive) and _ema_bullish_cross
+            _ema_bullish_cross = self.df["close"].iloc[-1] > ema.iloc[-1] and \
+                trending_up(self.df["close"].iloc[:-2], period=int(period/2))
+            buying = _vzo_bullish_cross and \
+                (_adx_trending or _dmi_positive) and \
+                _ema_bullish_cross
 
-    @staticmethod
-    def sell(dataframe):
+            if is_valid_dataframe(self.df2):
+                try:
+                    # grab the indicators we need (VZO, ADX, DMI, EMA) for this signal
+                    vzo2 = TA.VZO(self.df2, period2, column2, adjust2)
+                    adx2 = TA.ADX(self.df2, period2, adjust2)
+                    dmi2 = TA.DMI(self.df2, period2, adjust2)
+                    ema2 = TA.EMA(self.df2, ema_period2, column2, adjust2)
+                except TradeSignalException as error:
+                    raise error
+                else:
+                    _vzo_bullish_cross2 = vzo2.iloc[-1] > -40 and trending_up(vzo2.iloc[:-2], period=int(period2/2))
+                    _adx_trending2 = adx2.iloc[-1] > 20
+                    _dmi_positive2 = dmi2["DI+"] > dmi2["DI-"]
+                    _ema_bullish_cross2 = self.df2["close"].iloc[-1] > ema2.iloc[-1] and \
+                        trending_up(self.df2["close"].iloc[:-2], period=int(period2/2))
+                    buying = buying and _vzo_bullish_cross2 and (_adx_trending2 or _dmi_positive2) and _ema_bullish_cross2
+
+            return buying
+
+    def sell(self,
+             period: int = 14,
+             ema_period: int = 60,
+             column: str = "close",
+             adjust: bool = True,
+             period2: int = 14,
+             ema_period2: int = 60,
+             column2: str = "close",
+             adjust2: bool = True) -> bool:
         """Bearish sell signal calculation based on volume zone oscillator (VZO).
 
         The flag is generated based on a number of conditional statements generated from technical indicators.
@@ -64,24 +109,47 @@ class VzoSignal:
         if vzo.sell() or difference(current_price, entry_price) == profit_target:
             execute_sell_order()
 
-        :param dataframe:
+        :param period:
+        :param ema_period:
+        :param column:
+        :param adjust:
+        :param period2:
+        :param ema_period2:
+        :param column2:
+        :param adjust2:
         :return:
         """
-        if dataframe is None or len(list(dataframe.keys())) < 1:
-            raise EmptyDataError("[!] Dataframe is empty or not valid.")
         try:
             # grab the indicators we need (VZO, ADX, DMI, EMA) for this signal
-            vzo = TA.VZO(dataframe)
-            adx = TA.ADX(dataframe)
-            dmi = TA.DMI(dataframe)
-            ema = TA.EMA(dataframe, period=60)
+            vzo = TA.VZO(self.df, period, column, adjust)
+            adx = TA.ADX(self.df, period, adjust)
+            dmi = TA.DMI(self.df, period, adjust)
+            ema = TA.EMA(self.df, ema_period, column, adjust)
         except TradeSignalException as error:
             raise error
         else:
-            _vzo_bearish_cross = vzo.iloc[-1] < 40 and vzo.iloc[-4:-2].mean() >= 40
+            _vzo_bearish_cross = vzo.iloc[-1] < 40 and trending_down(vzo.iloc[:-2], period=int(period/2))
             _adx_trending = adx.iloc[-1] < 20
             _dmi_negative = dmi["DI-"] > dmi["DI+"]
-            _ema_bearish_cross = dataframe["close"].iloc[-1] < ema.iloc[-1] and dataframe["close"].iloc[-4:-2].mean() > ema.iloc[-4:-2].mean()
-            return _vzo_bearish_cross and (_adx_trending or _dmi_negative) and _ema_bearish_cross
+            _ema_bearish_cross = self.df["close"].iloc[-1] < ema.iloc[-1] and \
+                trending_down(self.df["close"].iloc[:-2], period=int(period/2))
+            selling = _vzo_bearish_cross and (_adx_trending or _dmi_negative) and _ema_bearish_cross
 
+            if is_valid_dataframe(self.df2):
+                try:
+                    # grab the indicators we need (VZO, ADX, DMI, EMA) for this signal
+                    vzo2 = TA.VZO(self.df2, period2, column2, adjust2)
+                    adx2 = TA.ADX(self.df2, period2, adjust2)
+                    dmi2 = TA.DMI(self.df2, period2, adjust2)
+                    ema2 = TA.EMA(self.df2, ema_period2, column2, adjust2)
+                except TradeSignalException as error:
+                    raise error
+                else:
+                    _vzo_bearish_cross2 = vzo2.iloc[-1] < 40 and trending_down(vzo2.iloc[:-2], period=int(period2/2))
+                    _adx_trending2 = adx2.iloc[-1] < 20
+                    _dmi_negative2 = dmi2["DI-"] > dmi2["DI+"]
+                    _ema_bearish_cross2 = self.df2["close"].iloc[-1] < ema2.iloc[-1] and \
+                        trending_down(self.df2["close"].iloc[:-2], period=int(period2/2))
+                    selling = selling and _vzo_bearish_cross2 and (_adx_trending2 or _dmi_negative2) and _ema_bearish_cross2
 
+            return selling
