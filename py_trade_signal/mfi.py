@@ -16,13 +16,14 @@ class MfiSignal(object):
         self.df = df
         self.df2 = df2
 
-    def buy(self, period: int = 14, period2: int = 14) -> bool:
-        """Calculate a moving average convergence-divergence buy signal from a bullish signal crossover.
-
-        An optional second dataframe can be used to calculate the signal for a different time period
-
+    def buy(self,
+            period: int = 14,
+            period2: int = 14,
+            lower_bound: int = 10) -> bool:
+        """
         :param period:
         :param period2:
+        :param lower_bound:
         :return:
         """
         try:
@@ -30,24 +31,25 @@ class MfiSignal(object):
         except TradeSignalException as error:
             raise error
         else:
-            buying = raw_mfi.iloc[-1] > 10 and raw_mfi.iloc[-2] <= 10 and trending_up(raw_mfi.iloc[:-2], period=int(period/2))
+            buying = raw_mfi.iloc[-1] > lower_bound and raw_mfi.iloc[-2] <= lower_bound and trending_up(raw_mfi.iloc[:-2], period=int(period/2))
             if is_valid_dataframe(self.df2):
                 try:
                     raw_mfi2 = TA.MFI(self.df2, period2)
                 except TradeSignalException as error:
                     raise error
                 else:
-                    buying = buying and raw_mfi2.iloc[-1] > 10 and raw_mfi2.iloc[-2] <= 10 and trending_up(raw_mfi2.iloc[:-2], period=int(period2/2))
+                    buying = buying and raw_mfi2.iloc[-1] > lower_bound and raw_mfi2.iloc[-2] <= lower_bound and trending_up(raw_mfi2.iloc[:-2], period=int(period2/2))
 
             return buying
 
-    def sell(self, period: int = 14, period2: int = 14) -> bool:
-        """Calculate a moving average convergence-divergence buy signal from a bullish signal crossover.
-
-        An optional second dataframe can be used to calculate the signal for a different time period
-
+    def sell(self,
+            period: int = 14,
+            period2: int = 14,
+            upper_bound: int = 90) -> bool:
+        """
         :param period:
         :param period2:
+        :param upper_bound:
         :return:
         """
         try:
@@ -55,13 +57,13 @@ class MfiSignal(object):
         except TradeSignalException as error:
             raise error
         else:
-            selling = raw_mfi.iloc[-1] < 90 and raw_mfi.iloc[-2] >= 90 and trending_down(raw_mfi.iloc[:-2], period=int(period/2))
+            selling = raw_mfi.iloc[-1] < upper_bound and raw_mfi.iloc[-2] >= upper_bound and trending_down(raw_mfi.iloc[:-2], period=int(period/2))
             if is_valid_dataframe(self.df2):
                 try:
                     raw_mfi2 = TA.MFI(self.df2, period)
                 except TradeSignalException as error:
                     raise error
                 else:
-                    selling = selling and raw_mfi2.iloc[-1] < 90 and raw_mfi2.iloc[-2] >= 90 and trending_down(raw_mfi2.iloc[:-2], period=int(period2/2))
+                    selling = selling and raw_mfi2.iloc[-1] < upper_bound and raw_mfi2.iloc[-2] >= upper_bound and trending_down(raw_mfi2.iloc[:-2], period=int(period2/2))
 
             return selling
