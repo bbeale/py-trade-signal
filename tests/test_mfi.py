@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from py_trade_signal import TradeSignal
+from py_trade_signal.mfi import MfiSignal
 import pandas as pd
 import numpy as np
 import os
@@ -14,16 +14,16 @@ data_file = os.path.join(rootdir(), "data/bittrex:btc-usdt.csv")
 
 ohlc = pd.read_csv(data_file, index_col="date", parse_dates=True)
 
-signal = TradeSignal(dataframe=ohlc)
+signal = MfiSignal(df=ohlc)
 
 
 def test_buy():
-    res = signal.mfi.buy()
+    res = signal.buy()
     assert res is not None
     assert type(res) == np.bool_
 
 
 def test_sell():
-    res = signal.mfi.sell()
+    res = signal.sell()
     assert res is not None
     assert type(res) == np.bool_
