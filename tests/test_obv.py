@@ -18,12 +18,12 @@ signal = TradeSignal(dataframe=ohlc)
 
 
 def test_buy():
-    res = signal.vzo.buy()
+    res = signal.obv.buy()
     assert res is not None
     assert type(res) == np.bool_
 
 
 def test_sell():
-    res = signal.vzo.sell()
+    res = signal.obv.sell()
     assert res is not None
     assert type(res) == np.bool_
