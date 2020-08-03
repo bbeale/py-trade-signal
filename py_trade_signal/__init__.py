@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from .exception import TradeSignalException
+from .signal_utils import SignalUtils
 from .macd import MacdSignal
 from .mfi import MfiSignal
+from .obv import ObvSignal
+from .rsi import RsiSignal
 from .vzo import VzoSignal
 import pandas as pd
 
@@ -18,17 +22,11 @@ class TradeSignal(object):
         self.dataframe = dataframe
         self.dataframe2 = dataframe2
 
-        if not is_valid_dataframe(self.dataframe):
+        if not SignalUtils.is_valid_dataframe(self.dataframe):
             raise TradeSignalException("[!] Signal calculations require at least one valid dataframe.")
 
-        self.macd_signal = MacdSignal(self.dataframe, self.dataframe2)
-        self.mfi_signal = MfiSignal(self.dataframe, self.dataframe2)
-        self.vzo_signal = VzoSignal(self.dataframe, self.dataframe2)
-
-
-def is_valid_dataframe(dataframe: pd.DataFrame) -> bool:
-    return dataframe is not None and len(dataframe.index) > 0
-
-
-class TradeSignalException(Exception):
-    pass
+        self.macd = MacdSignal(self.dataframe, self.dataframe2)
+        self.mfi = MfiSignal(self.dataframe, self.dataframe2)
+        self.obv = ObvSignal(self.dataframe, self.dataframe2)
+        self.rsi = RsiSignal(self.dataframe, self.dataframe2)
+        self.vzo = VzoSignal(self.dataframe, self.dataframe2)
